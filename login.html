@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CookSmart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- You can link to style.css or add specific login styles here -->
+    <link rel="stylesheet" href="style.css"> <!-- Link to main style.css -->
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh; /* Adjusted to prevent overlap with potential fixed footer if any */
+            background-color: var(--light); /* Ensure body background is set */
+        }
+        .login-page-container { /* Renamed to avoid conflict */
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-page-container h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .login-page-container h1 span {
+            color: var(--secondary);
+        }
+        .login-page-container p {
+            margin-bottom: 30px;
+            color: #666;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .btn-login-submit { /* Specific class for login button if needed */
+            width: 100%;
+            margin-top: 10px;
+        }
+        .toggle-link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .toggle-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+        #message {
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <div class="login-page-container">
+        <h1>Cook<span>Smart</span></h1>
+        <p id="form-title">Login to your account</p>
+        <form id="authForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" id="submitBtn" class="btn btn-login-submit">Login</button>
+        </form>
+        <div id="message"></div>
+        <div class="toggle-link">
+            <span id="toggleText">Don't have an account? </span>
+            <a href="#" id="toggleAuthMode">Sign Up</a>
+        </div>
+         <div class="toggle-link" style="margin-top: 10px;">
+            <a href="index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const authForm = document.getElementById('authForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const submitBtn = document.getElementById('submitBtn');
+            const messageDiv = document.getElementById('message');
+            const toggleAuthModeLink = document.getElementById('toggleAuthMode');
+            const formTitle = document.getElementById('form-title');
+            const toggleText = document.getElementById('toggleText');
+
+            let isLoginMode = true;
+
+            toggleAuthModeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                isLoginMode = !isLoginMode;
+                if (isLoginMode) {
+                    formTitle.textContent = 'Login to your account';
+                    submitBtn.textContent = 'Login';
+                    toggleText.textContent = "Don't have an account? ";
+                    toggleAuthModeLink.textContent = 'Sign Up';
+                } else {
+                    formTitle.textContent = 'Create a new account';
+                    submitBtn.textContent = 'Sign Up';
+                    toggleText.textContent = "Already have an account? ";
+                    toggleAuthModeLink.textContent = 'Login';
+                }
+                messageDiv.textContent = '';
+                messageDiv.className = '';
+                authForm.reset();
+            });
+
+            authForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                messageDiv.textContent = '';
+                messageDiv.className = '';
+
+
+                if (!email || !password) {
+                    messageDiv.textContent = 'Please fill in all fields.';
+                    messageDiv.classList.add('error');
+                    return;
+                }
+                if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+                    messageDiv.textContent = 'Please enter a valid email address.';
+                    messageDiv.classList.add('error');
+                    return;
+                }
+
+                let users = JSON.parse(localStorage.getItem('cooksmart_users')) || [];
+
+                if (isLoginMode) {
+                    const user = users.find(u => u.email === email && u.password === password); // WARNING: Plain text password check!
+                    if (user) {
+                        localStorage.setItem('cooksmart_loggedInUser', JSON.stringify({email: user.email}));
+                        messageDiv.textContent = 'Login successful! Redirecting...';
+                        messageDiv.classList.add('success');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    } else {
+                        messageDiv.textContent = 'Invalid email or password.';
+                        messageDiv.classList.add('error');
+                    }
+                } else { // Sign Up mode
+                    if (users.find(u => u.email === email)) {
+                        messageDiv.textContent = 'User with this email already exists.';
+                        messageDiv.classList.add('error');
+                        return;
+                    }
+                    if (password.length < 6) {
+                        messageDiv.textContent = 'Password must be at least 6 characters long.';
+                        messageDiv.classList.add('error');
+                        return;
+                    }
+                    // WARNING: Storing password in plain text is highly insecure. For demo only.
+                    const newUser = { email, password, searches: [], recentlyViewed: [], reviews: [] };
+                    users.push(newUser);
+                    localStorage.setItem('cooksmart_users', JSON.stringify(users));
+                    localStorage.setItem('cooksmart_loggedInUser', JSON.stringify({email: newUser.email})); // Auto-login
+                    messageDiv.textContent = 'Account created successfully! Redirecting...';
+                    messageDiv.classList.add('success');
+                     setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

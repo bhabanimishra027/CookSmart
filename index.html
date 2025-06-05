@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CookSmart - Personalized Cooking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Cook<span>Smart</span></a>
+            <nav>
+                <ul id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#recipesSectionTitle">Recipes</a></li>
+                    <li><a href="#mealPlanSection">Meal Plans</a></li>
+                    <li><a href="#nutritionSection">Nutrition</a></li>
+                    <!--<li><a href="login.html">Account</a>-->
+                
+                    <!-- Login/Account/Logout links will be dynamically added by js/auth.js -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Your Personalized Cooking, Just For You</h1>
+            <p>Discover recipes tailored to your preferences, dietary needs, and time constraints.</p>
+            <a href="#recipesSectionTitle" class="btn">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Main Container for Filters and Recipe Display -->
+    <div class="container">
+        <h2 class="section-title">Find Your Perfect Recipe</h2>
+        <div class="filters-container">
+            <div class="filter-group">
+                <label for="recipeNameSearch">Search by Name:</label>
+                <input type="text" id="recipeNameSearch" placeholder="e.g., Paneer Butter Masala">
+            </div>
+            <div class="filter-group">
+                <label for="ingredientsSearch">Ingredients (comma-separated):</label>
+                <input type="text" id="ingredientsSearch" placeholder="e.g., chicken, onion">
+            </div>
+            <div class="filter-group">
+                <label for="maxTime">Max Cook Time (minutes):</label>
+                <input type="number" id="maxTime" placeholder="e.g., 30" min="0">
+            </div>
+            <div class="filter-group">
+                <label for="cuisineSelect">Cuisine:</label>
+                <select id="cuisineSelect">
+                    <option value="">All Cuisines</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="mealTypeSelect">Meal Type:</label>
+                <select id="mealTypeSelect">
+                    <option value="">All Meal Types</option>
+                </select>
+            </div>
+            <div class="filter-buttons">
+                <button id="applyFiltersBtn" class="btn">Apply Filters</button>
+                <button id="resetFiltersBtn" class="btn btn-secondary">Reset Filters</button>
+            </div>
+        </div>
+        <p id="noResultsMessage" style="text-align:center; margin: 20px 0; display:none;">No recipes found matching your criteria.</p>
+
+        <div id="personalizedSuggestions" style="display:none;">
+             <h2 class="section-title" id="personalizedTitle">Suggestions For You</h2>
+             <div class="recipes-grid" id="personalizedRecipesGrid">
+                 <!-- Personalized recipe cards will be injected here -->
+             </div>
+        </div>
+
+        <h2 class="section-title" id="recipesSectionTitle">Recommended For You</h2>
+        <div class="recipes-grid" id="recipesGrid">
+            <!-- Recipe cards will be injected here by JavaScript -->
+        </div>
+
+        <div class="load-more" id="paginationControls">
+            <button class="btn" id="loadMoreBtn">Load More Recipes</button>
+            <button class="btn btn-ideas" id="viewMoreIdeasBtn" style="display:none; margin-left: 10px;">View All Recipe Ideas</button>
+        </div>
+    </div> <!-- End of Main Container for Filters and Recipe Display -->
+
+    <!-- Container for other sections like Meal Plan, Nutrition, etc. -->
+    <div class="container">
+        <div class="meal-plan" id="mealPlanSection">
+            <div class="meal-plan-header">
+                <h2>Your Meal Plan</h2>
+                <p>Plan your meals for the week based on your preferences and time constraints.</p>
+            </div>
+            <div class="meal-plan-days">
+                <div class="day">Monday</div><div class="day">Tuesday</div><div class="day">Wednesday</div><div class="day">Thursday</div><div class="day">Friday</div><div class="day">Saturday</div><div class="day">Sunday</div>
+            </div>
+             <div class="meal-time">Breakfast</div>
+            <div class="meal-plan-days">
+                <div class="meal-item" data-day="Monday" data-meal="Breakfast">Click to add</div>
+                <div class="meal-item" data-day="Tuesday" data-meal="Breakfast">Click to add</div>
+                <div class="meal-item" data-day="Wednesday" data-meal="Breakfast">Click to add</div>
+                <div class="meal-item" data-day="Thursday" data-meal="Breakfast">Click to add</div>
+                <div class="meal-item" data-day="Friday" data-meal="Breakfast">Click to add</div>
+                <div class="meal-item" data-day="Saturday" data-meal="Breakfast">Click to add</div>
+                <div class="meal-item" data-day="Sunday" data-meal="Breakfast">Click to add</div>
+            </div>
+            <div class="meal-time">Lunch</div>
+            <div class="meal-plan-days">
+                <div class="meal-item" data-day="Monday" data-meal="Lunch">Click to add</div>
+                <div class="meal-item" data-day="Tuesday" data-meal="Lunch">Click to add</div>
+               <div class="meal-item" data-day="Wednesday" data-meal="Lunch">Click to add</div>
+                <div class="meal-item" data-day="Thursday" data-meal="Lunch">Click to add</div>
+                <div class="meal-item" data-day="Friday" data-meal="Lunch">Click to add</div>
+                <div class="meal-item" data-day="Saturday" data-meal="Lunch">Click to add</div>
+                <div class="meal-item" data-day="Sunday" data-meal="Lunch">Click to add</div>
+            </div>
+            <div class="meal-time">Dinner</div>
+            <div class="meal-plan-days">
+                <div class="meal-item" data-day="Monday" data-meal="Dinner">Click to add</div>
+                <div class="meal-item" data-day="Tuesday" data-meal="Dinner">Click to add</div>
+                <div class="meal-item" data-day="Wednesday" data-meal="Dinner">Click to add</div>
+                <div class="meal-item" data-day="Thursday" data-meal="Dinner">Click to add</div>
+                <div class="meal-item" data-day="Friday" data-meal="Dinner">Click to add</div>
+                <div class="meal-item" data-day="Saturday" data-meal="Dinner">Click to add</div>
+                <div class="meal-item" data-day="Sunday" data-meal="Dinner">Click to add</div>
+                
+                
+            </div>
+            <div class="meal-plan-summary">
+                <div>
+                    <p>Total Recipes in Plan: <span id="mealPlanTotalRecipes">0</span></p>
+                    <!-- Prep time calculation can be added later if recipes have prep time data -->
+                </div>
+                <div class="save-plan-container">
+                    <button id="clearPlanBtn" class="btn btn-secondary" style="margin-right: 10px;">Clear Plan</button>
+                    <button id="savePlanBtn" class="btn"><i class="fas fa-save"></i> Save Plan</button>
+                    <p id="savePlanMessage" style="font-size: 0.9em; margin-top: 5px; color: green;"></p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title" id="nutritionSection">Nutritional Analysis</h2>
+         <div class="nutrition-section">
+            <div class="nutrition-card">
+                <h3 class="nutrition-title">Weekly Average (Per Day)</h3>
+                <div class="nutrition-macro">
+                    <div class="macro-name"><span>Protein</span><span id="avgProteinPercent">0%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" id="avgProteinFill" style="width: 0%;"></div></div>
+                </div>
+                <div class="nutrition-macro">
+                    <div class="macro-name"><span>Carbohydrates</span><span id="avgCarbsPercent">0%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" id="avgCarbsFill" style="width: 0%;"></div></div>
+                </div>
+                <div class="nutrition-macro">
+                    <div class="macro-name"><span>Fats</span><span id="avgFatsPercent">0%</span></div>
+                    <div class="progress-bar"><div class="progress-fill" id="avgFatsFill" style="width: 0%;"></div></div>
+                </div>
+                <div id="nutritionAlertsContainer">
+                     <div class="nutrition-alert" id="initialNutritionAlert"><p>Add recipes to your meal plan to see nutritional analysis.</p></div>
+                </div>
+            </div>
+            <div class="nutrition-card">
+                <h3 class="nutrition-title">Daily Averages</h3>
+                <div class="nutrition-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgCalories">0</div>
+                        <div class="stat-label">Calories</div>
+                        <div class="stat-label">daily average</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgProteinGrams">0g</div>
+                        <div class="stat-label">Protein</div>
+                        <div class="stat-label">daily average</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgCarbsGrams">0g</div>
+                        <div class="stat-label">Carbohydrates</div>
+                        <div class="stat-label">daily average</div>
+                    </div>
+                     <div class="stat-item">
+                        <div class="stat-value" id="avgFatsGrams">0g</div>
+                        <div class="stat-label">Fats</div>
+                        <div class="stat-label">daily average</div>
+                    </div>
+                </div>
+                <h4>Key Nutrients (Example)</h4>
+                <div class="nutrient-list" id="keyNutrientsList">
+                    <div class="nutrient-item"><span class="nutrient-name">Vitamin C</span><span class="nutrient-value">0% DV</span></div>
+                    <div class="nutrient-item"><span class="nutrient-name">Iron</span><span class="nutrient-value">0% DV</span></div>
+                </div>
+                <div class="recommendation" id="nutritionRecommendations"><p>Recommendations will appear here based on your plan.</p></div>
+            </div>
+        </div>
+        <div class="recommendation"><p><strong>Recommendation:</strong></p><p>Consider adding fortified plant milks or a supplement for B12.</p><p>Include flaxseeds or walnuts for Omega-3s.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column"><h3>CookSmart</h3><p>Personalizing your cooking experience with smart recipe recommendations tailored to your preferences.</p></div>
+                <div class="footer-column"><h3>Explore</h3><ul><li><a href="#">Recipe Collection</a></li><li><a href="#">Meal Planning</a></li><li><a href="#">Nutritional Guides</a></li><li><a href="#">Seasonal Ingredients</a></li></ul></div>
+                <div class="footer-column"><h3>Resources</h3><ul><li><a href="#">Food Blog</a></li><li><a href="#">Cooking Videos</a></li><li><a href="#">Community Forum</a></li><li><a href="#">Kitchen Tips</a></li></ul></div>
+                <div class="footer-column newsletter"><h3>Subscribe to Our Newsletter</h3><p>Get the latest recipes and cooking tips delivered to your inbox.</p><div class="newsletter-input"><input type="email" placeholder="Your email address"><button type="submit"><i class="fas fa-paper-plane"></i></button></div></div>
+            </div>
+            <div class="social-icons"><a href="#"><i class="fab fa-facebook-f"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-pinterest"></i></a></div>
+            <div class="footer-bottom"><div class="footer-links"><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Cookie Policy</a></div><p>© 2024 CookSmart. All rights reserved.</p></div>
+        </div>
+    </footer>
+
+    <!-- Recipe Modal -->
+    <div id="recipeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h2 id="modalRecipeTitle"></h2>
+            <img id="modalRecipeImage" src="" alt="Recipe Image">
+            <h3><i class="fas fa-utensils"></i> Ingredients:</h3><ul id="modalRecipeIngredients"></ul>
+            <h3><i class="fas fa-list-ol"></i> Instructions:</h3><div id="modalRecipeInstructions"></div>
+            <h3><i class="fas fa-video"></i> Watch Video:</h3><div id="modalRecipeVideo" class="video-container"></div>
+            <!-- Review Section -->
+            <div id="modalReviewSection" style="margin-top: 20px;">
+                <h3><i class="fas fa-star"></i> Add Your Review</h3>
+                <div>
+                    <label for="reviewRating">Rating (1-5):</label>
+                    <input type="number" id="reviewRating" min="1" max="5" style="width: 60px; padding: 5px;">
+                </div>
+                <div style="margin-top: 10px;">
+                    <label for="reviewText">Comment:</label>
+                    <textarea id="reviewText" rows="3" style="width: 100%; padding: 5px;"></textarea>
+                </div>
+                <button id="submitReviewBtn" class="btn btn-secondary" style="margin-top: 10px;">Submit Review</button>
+                <p id="reviewMessage" style="font-size: 0.9em; margin-top: 5px;"></p>
+            </div>
+            <div id="modalDisplayReviews" style="margin-top: 20px;">
+                 <h3><i class="fas fa-comments"></i> Recipe Reviews</h3>
+                 <ul id="modalRecipeReviewsList" style="list-style: none; padding-left: 0;"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

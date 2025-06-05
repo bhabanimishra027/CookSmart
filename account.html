@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - CookSmart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> <!-- Link to main style.css -->
+    <style>
+        /* Additional styles specific to account page can go here or in a separate account.css */
+        .account-container { /* Specific container for account page content */
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+        .account-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        .account-section h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .account-section h2 i {
+            margin-right: 10px;
+        }
+        .account-section p, .account-section li {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+        .account-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .account-section li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .account-section li:last-child {
+            border-bottom: none;
+        }
+        .list-item {
+            background-color: #f9f9f9;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .list-item strong { color: var(--dark); }
+        .list-item em { color: #555; font-size: 0.9em; display: block; margin-top: 4px; }
+        .no-data { color: #777; font-style: italic; padding: 10px 0; }
+        .search-query-details {
+            font-size: 0.85em;
+            color: #444;
+            margin-left: 15px;
+            display: block;
+        }
+        .review-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .review-item-header span { font-size: 0.9em; color: #666; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Cook<span>Smart</span></a>
+            <nav>
+                <ul id="navLinksAccount"> <!-- Different ID for account page nav if needed, or use same and adapt auth.js -->
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#recipesSectionTitle">Recipes</a></li>
+                    <li><a href="#mealPlanSection">Meal Plans</a></li>
+                    <li><a href="#nutritionSection">Nutrition</a></li>
+                    <!-- Login/Account/Logout links will be dynamically added -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container account-container">
+        <div class="account-section">
+            <h2><i class="fas fa-user-circle"></i> Account Details</h2>
+            <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+            <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+        </div>
+
+        <div class="account-section">
+            <h2><i class="fas fa-eye"></i> Recently Viewed Recipes</h2>
+            <ul id="recentlyViewedList">
+                <!-- Recently viewed recipes will be listed here -->
+            </ul>
+        </div>
+
+        <div class="account-section">
+            <h2><i class="fas fa-search"></i> My Saved Searches</h2>
+            <ul id="savedSearchesList">
+                <!-- Saved searches will be listed here -->
+            </ul>
+        </div>
+
+        <div class="account-section">
+            <h2><i class="fas fa-star"></i> My Reviews</h2>
+            <ul id="myReviewsList">
+                <!-- User's reviews will be listed here -->
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <!-- You can copy the footer from index.html or simplify it -->
+         <div class="container">
+            <div class="footer-bottom"><p>© 2024 CookSmart. All rights reserved.</p></div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Simplified auth and user data logic for account.html
+        // Ideally, share this logic from common JS modules if building a larger app.
+        // For this example, we'll keep it self-contained for account.html
+
+        const navLinksAccount = document.getElementById('navLinksAccount');
+        const userEmailSpan = document.getElementById('userEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const recentlyViewedList = document.getElementById('recentlyViewedList');
+        const savedSearchesList = document.getElementById('savedSearchesList');
+        const myReviewsList = document.getElementById('myReviewsList');
+
+        let allRecipesData = []; // To store {id, title} for recipe lookups
+
+        function getLoggedInUserAccount() {
+            const user = localStorage.getItem('cooksmart_loggedInUser');
+            return user ? JSON.parse(user) : null;
+        }
+
+        function updateNavAccount() {
+            if (!navLinksAccount) return;
+            const loggedInUser = getLoggedInUserAccount();
+            const dynamicLinks = navLinksAccount.querySelectorAll('.dynamic-nav-link');
+            dynamicLinks.forEach(link => link.remove());
+
+            if (loggedInUser) {
+                const accountLi = document.createElement('li');
+                accountLi.classList.add('dynamic-nav-link');
+                accountLi.innerHTML = `<a href="account.html" style="color: var(--primary);">My Account</a>`; // Highlight current page
+                navLinksAccount.appendChild(accountLi);
+
+                const logoutLi = document.createElement('li');
+                logoutLi.classList.add('dynamic-nav-link');
+                const logoutLink = document.createElement('a');
+                logoutLink.href = "#";
+                logoutLink.textContent = "Logout";
+                logoutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem('cooksmart_loggedInUser');
+                    window.location.href = 'index.html';
+                });
+                logoutLi.appendChild(logoutLink);
+                navLinksAccount.appendChild(logoutLi);
+            } else {
+                // Should not happen if page is protected, but as a fallback:
+                const loginLi = document.createElement('li');
+                loginLi.classList.add('dynamic-nav-link');
+                loginLi.innerHTML = `<a href="login.html">Login/Sign Up</a>`;
+                navLinksAccount.appendChild(loginLi);
+            }
+        }
+
+        function getRecipeTitleById(recipeId) {
+            const recipe = allRecipesData.find(r => r.id === recipeId);
+            return recipe ? recipe.title : `Recipe ID: ${recipeId}`;
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loggedInUser = getLoggedInUserAccount();
+            updateNavAccount(); // Update nav first
+
+            if (!loggedInUser) {
+                window.location.href = 'login.html'; // Redirect if not logged in
+                return;
+            }
+
+            // Load allRecipesData (id, title pairs) from localStorage
+            const storedAllRecipes = localStorage.getItem('cooksmart_allRecipesData');
+            if (storedAllRecipes) {
+                allRecipesData = JSON.parse(storedAllRecipes);
+            }
+
+
+            if (userEmailSpan) userEmailSpan.textContent = loggedInUser.email;
+
+            const users = JSON.parse(localStorage.getItem('cooksmart_users')) || [];
+            const currentUserData = users.find(u => u.email === loggedInUser.email);
+
+            if (currentUserData) {
+                // Populate Recently Viewed
+                if (recentlyViewedList) {
+                    if (currentUserData.recentlyViewed && currentUserData.recentlyViewed.length > 0) {
+                        currentUserData.recentlyViewed.forEach(recipeId => {
+                            const li = document.createElement('li');
+                            li.classList.add('list-item');
+                            li.innerHTML = `<strong>${getRecipeTitleById(recipeId)}</strong>`;
+                            recentlyViewedList.appendChild(li);
+                        });
+                    } else {
+                        recentlyViewedList.innerHTML = '<li class="no-data">No recently viewed recipes.</li>';
+                    }
+                }
+
+                // Populate Saved Searches
+                if (savedSearchesList) {
+                    if (currentUserData.searches && currentUserData.searches.length > 0) {
+                        currentUserData.searches.forEach(searchItem => {
+                            const li = document.createElement('li');
+                            li.classList.add('list-item');
+                            let queryText = "Search: ";
+                            const q = searchItem.query;
+                            if (q.nameQuery) queryText += `Name: "${q.nameQuery}" `;
+                            if (q.ingredientsQuery) queryText += `Ingredients: "${q.ingredientsQuery}" `;
+                            if (q.maxTimeQuery) queryText += `Time: <${q.maxTimeQuery}m `;
+                            if (q.cuisineQuery) queryText += `Cuisine: ${q.cuisineQuery} `;
+                            if (q.mealTypeQuery) queryText += `Meal: ${q.mealTypeQuery} `;
+
+                            li.innerHTML = `<strong>${queryText.trim()}</strong> <em>Searched on: ${new Date(searchItem.date).toLocaleDateString()}</em>`;
+                            savedSearchesList.appendChild(li);
+                        });
+                    } else {
+                        savedSearchesList.innerHTML = '<li class="no-data">No saved searches.</li>';
+                    }
+                }
+            } else {
+                if (userEmailSpan) userEmailSpan.textContent = "User data not found.";
+                 if (recentlyViewedList) recentlyViewedList.innerHTML = '<li class="no-data">Could not load data.</li>';
+                 if (savedSearchesList) savedSearchesList.innerHTML = '<li class="no-data">Could not load data.</li>';
+            }
+
+            // Populate My Reviews (from global reviews store)
+            if (myReviewsList) {
+                const allSiteReviews = JSON.parse(localStorage.getItem('cooksmart_reviews')) || [];
+                const userReviews = allSiteReviews.filter(review => review.userEmail === loggedInUser.email);
+
+                if (userReviews.length > 0) {
+                    userReviews.forEach(review => {
+                        const li = document.createElement('li');
+                        li.classList.add('list-item');
+                        li.innerHTML = `
+                            <div class="review-item-header">
+                                <strong>${getRecipeTitleById(review.recipeId)}</strong>
+                                <span>Rating: ${review.rating}/5</span>
+                            </div>
+                            <p>${review.text || "No comment provided."}</p>
+                            <em>Reviewed on: ${new Date(review.date).toLocaleDateString()}</em>
+                        `;
+                        myReviewsList.appendChild(li);
+                    });
+                } else {
+                    myReviewsList.innerHTML = '<li class="no-data">You have not submitted any reviews yet.</li>';
+                }
+            }
+
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('cooksmart_loggedInUser');
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
